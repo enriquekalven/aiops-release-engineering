@@ -1,0 +1,24 @@
+version: 1.0.0
+app_name: "ai-ops-agent"
+
+bump:
+  files:
+    - "pyproject.toml"
+    - "package.json"
+    - "src/ai_ops_release/config.py"
+
+gates:
+  lint_command: "uv run ruff check ."
+  test_command: "uv run pytest"
+  drift_evalset: "examples/drift_evalset.json"
+  target_agent_path: "examples/sample_agent.py"
+  target_agent_object: "agent"
+  target_agent_app_name: "app"
+
+deployment:
+  frontend_build_command: "echo 'Skipping Frontend Build (Demo)'"
+  frontend_deploy_command: "echo 'Skipping Frontend Deploy (Demo)'"
+  package_build_command: "uv build"
+  package_publish_command: "echo 'Skipping Publish (Demo, set PYPI_TOKEN)'"
+
+doc_sync_script: ""

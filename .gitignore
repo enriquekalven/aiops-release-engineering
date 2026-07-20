@@ -1,0 +1,16 @@
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.ruff_cache/
+.venv/
+venv/
+site-packages/
+dist/
+build/
+.ai-ops/release_certificate.txt
+.ai-ops/audit_attestation.json
+.env
+.env.*
+.DS_Store
+*.egg-info/
