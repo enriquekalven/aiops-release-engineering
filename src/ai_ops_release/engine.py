@@ -76,11 +76,9 @@ class Zero2HeroEngine:
 
                 # Regex for "version = X.Y.Z" or "version": "X.Y.Z" or VERSION = "X.Y.Z"
                 new_content = re.sub(
-                    r'((?:version|VERSION)\s*[:=]\s*["\'])([^"\']+)(["\'])',
+                    r'(?im)^(\s*(?:"?version"?|"?VERSION"?)\s*[:=]\s*["\'])([^"\']+)(["\'])',
                     f"\\g<1>{new_version}\\g<3>",
                     content,
-                    count=1,
-                    flags=re.IGNORECASE
                 )
 
                 with open(full_path, "w", encoding="utf-8") as f:

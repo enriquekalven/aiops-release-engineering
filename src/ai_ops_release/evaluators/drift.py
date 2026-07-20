@@ -55,11 +55,17 @@ class DriftEvaluator:
                     return data
                 elif all(isinstance(item, dict) and "prompt" in item for item in data):
                     return [item["prompt"] for item in data]
-                elif all(isinstance(item, dict) and "user_content" in item for item in data):
+                elif all(isinstance(item, dict) and ("conversation" in item or "user_content" in item) for item in data):
                     # Handle full evalset schema
                     prompts = []
                     for case in data:
-                        if "conversation" in case and isinstance(case["conversation"], list):
+                        # If the item itself is a turn with user_content
+                        if "user_content" in case and "parts" in case["user_content"]:
+                             for part in case["user_content"]["parts"]:
+                                 if "text" in part:
+                                     prompts.append(part["text"])
+                        # If the item is a case with a conversation array
+                        elif "conversation" in case and isinstance(case["conversation"], list):
                             for turn in case["conversation"]:
                                 if "user_content" in turn and "parts" in turn["user_content"]:
                                     for part in turn["user_content"]["parts"]:

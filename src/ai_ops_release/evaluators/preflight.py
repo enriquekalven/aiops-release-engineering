@@ -60,7 +60,7 @@ class PreflightEngine:
         """Check for common environment debt (missing .env file)."""
         env_files = [f for f in os.listdir(self.target_path) if f.startswith(".env")]
         if not env_files:
-            return False, "No .env file found in workspace root."
+            return True, "No .env detected. Ensure environment variables are loaded."
         return True, f"Detected environment files: {', '.join(env_files)}"
 
     def check_api_keys(self, required_keys: list[str] = None) -> tuple[bool, str]:
