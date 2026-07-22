@@ -1,0 +1,33 @@
+{
+  "name": "ast_structural_hasher",
+  "title": "Layout-Agnostic AST Structural Hasher Optimization",
+  "problem_description": "Optimize a layout-agnostic Abstract Syntax Tree (AST) Structural Hasher for Python code. The goal is to compute a SHA-256 hash of the code's structure that satisfies three criteria:\n1. Layout Resilience: Ignore all comments, docstrings (function, class, and module level), indentation, and line breaks.\n2. Formatting Resilience: Ignore pure whitespace and capitalization updates in large descriptive string literals or log messages.\n3. Semantic Sensitivity: Catch changes to critical string literals (URLs, config keys, path strings, numeric constants), variable renames that alter function contracts, and of course all logic, operator, and control flow changes. The output hash must change IF AND ONLY IF the code has a true functional or semantic configuration change.",
+  "metric_name": "accuracy_score",
+  "metric_direction": "maximize",
+  "eval_inputs": {
+    "dataset": "standard_benchmark"
+  },
+  "language": "python",
+  "allowed_imports": [
+    "ast",
+    "hashlib",
+    "re"
+  ],
+  "forbidden_imports": [],
+  "initial_program_description": "A Python class ASTStructuralHasher inheriting from ast.NodeVisitor that builds a list of structural tokens during an AST visit, then hashes them. It currently skips all docstrings and ALL string constants to achieve layout resilience, which makes it blind to critical config updates.",
+  "evolve_block_description": "The visit method of the ASTStructuralHasher class, which decides how to parse each AST node, when to extract tokens (and their values), and when to recurse into children.",
+  "evaluation_strategy": "PARTIAL_CREDIT",
+  "timeout_seconds": 30,
+  "dependencies": [
+    "pytest",
+    "pytest-asyncio"
+  ],
+  "source_file": "src/ai_ops_release/evaluators/code_drift.py",
+  "source_code": "    def __init__(self):\n        self.structural_tokens = []\n\n    def visit(self, node: ast.AST):\n        # Skip docstring expressions entirely\n        if (\n            isinstance(node, ast.Expr)\n            and isinstance(node.value, ast.Constant)\n            and isinstance(node.value.value, str)\n        ):\n            return\n\n        if isinstance(node, ast.Constant) and isinstance(node.value, str):\n            # Skip the literal string inside the docstring or inline string\n            return\n\n        # Record the type of the node\n        self.structural_tokens.append(type(node).__name__)\n\n        # Extract specific structural properties for critical nodes\n        if isinstance(node, ast.Name):\n            self.structural_tokens.append(f\"Name:{node.id}\")\n        elif isinstance(node, ast.Constant):\n            self.structural_tokens.append(f\"Const:{repr(node.value)}\")\n\n        elif isinstance(node, ast.arg):\n            self.structural_tokens.append(f\"Arg:{node.arg}\")\n        elif isinstance(node, ast.FunctionDef) or isinstance(\n            node, ast.AsyncFunctionDef\n        ):\n            self.structural_tokens.append(f\"Func:{node.name}\")\n            # Visit decorators\n            for dec in node.decorator_list:\n                self.visit(dec)\n        elif isinstance(node, ast.ClassDef):\n            self.structural_tokens.append(f\"Class:{node.name}\")\n\n        # Recursively visit children\n        super().generic_visit(node)",
+  "constraints": [
+    "Must be layout-agnostic (ignore comments, docstrings, indentation).",
+    "Must catch changes to critical string literals (URLs, paths, keys).",
+    "Must NOT use external APIs or network calls.",
+    "Must be deterministic (same code yields identical hash every time)."
+  ]
+}

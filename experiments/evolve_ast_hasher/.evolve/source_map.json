@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "experiment_dir": "/Users/enriq/Documents/git/aiops-release-engineering/experiments/evolve_ast_hasher",
+  "mappings": [
+    {
+      "experiment_file": "initial_program.py",
+      "symbol": "ASTStructuralHasher",
+      "symbol_type": "class",
+      "is_evolve_block": true,
+      "original_file": "src/ai_ops_release/evaluators/code_drift.py",
+      "original_lines": [15, 55],
+      "original_symbol": "ASTStructuralHasher",
+      "integration_mode": "function_replacement"
+    }
+  ],
+  "strip_evolve_markers": true
+}

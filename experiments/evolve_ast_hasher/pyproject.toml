@@ -1,0 +1,9 @@
+[project]
+name = "ast_structural_hasher"
+version = "0.1.0"
+description = "Layout-Agnostic AST Structural Hasher Optimization"
+requires-python = ">=3.10"
+dependencies = [
+    "pytest",
+    "pytest-asyncio",
+]
